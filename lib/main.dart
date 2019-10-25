@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 20),
                 buildButton(isValid),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
                 buildPulseArea(height * 0.5),
               ],
             ),
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildTextField(TextEditingController controller, String hint) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
       child: TextField(
         controller: controller,
         readOnly: server.isOn,
@@ -117,12 +117,15 @@ class _HomePageState extends State<HomePage> {
   Widget buildButton(bool visible) {
     return Visibility(
       visible: visible,
-      child: RaisedButton(
-        elevation: 5,
-        onPressed: server.isOn ? closeServer : startServer,
-        child: Text(
-          server.isOn ? 'OFF' : 'ON',
-          style: TextStyle(color: Colors.white, fontSize: 20),
+      child: Container(
+        height: 50,
+        child: RaisedButton(
+          elevation: 5,
+          onPressed: server.isOn ? closeServer : startServer,
+          child: Text(
+            server.isOn ? 'OFF' : 'ON',
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
         ),
       ),
     );

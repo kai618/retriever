@@ -24,11 +24,11 @@ class Server {
         break;
       case '/password':
         req.response.write(pw);
-//        print('responsed ' + pw);
+        print('responsed $pw');
         break;
       default:
         req.response.write('Not found');
-//        print('responsed Not found');
+        print('responsed Not found');
     }
     req.response.close();
   }
