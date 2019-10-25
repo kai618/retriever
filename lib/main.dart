@@ -52,16 +52,25 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void startServer() {
-    server.start(ssidController.text, pwController.text, () {
-      setState(() {});
-    });
+  void startServer(BuildContext context) {
+    server.start(
+      ssidController.text,
+      pwController.text,
+      () => setState(() {}),
+      () => _showToast(context),
+    );
   }
 
   void closeServer() {
-    server.close(() {
-      setState(() {});
-    });
+    server.close(() => setState(() {}));
+  }
+
+  void _showToast(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(SnackBar(
+      content: Text('Starting a server failed!'),
+      action: SnackBarAction(label: 'OK', onPressed: scaffold.hideCurrentSnackBar),
+    ));
   }
 
   @override
@@ -72,24 +81,21 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: buildAppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    buildTextField(ssidController, 'SSID'),
-                    buildTextField(pwController, 'Password'),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                buildButton(isValid),
-                const SizedBox(height: 30),
-                buildPulseArea(height * 0.5),
-              ],
+      body: Builder(
+        builder: (context) => SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  buildTextField(ssidController, 'SSID'),
+                  buildTextField(pwController, 'Password'),
+                  const SizedBox(height: 20),
+                  buildButton(isValid, context, startServer, closeServer),
+                  const SizedBox(height: 30),
+                  buildPulseArea(height * 0.5),
+                ],
+              ),
             ),
           ),
         ),
@@ -114,14 +120,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildButton(bool visible) {
+  Widget buildButton(
+      bool visible, BuildContext context, Function startServer, Function closeServer) {
     return Visibility(
       visible: visible,
       child: Container(
         height: 50,
         child: RaisedButton(
           elevation: 5,
-          onPressed: server.isOn ? closeServer : startServer,
+          onPressed: server.isOn ? closeServer : () => startServer(context),
           child: Text(
             server.isOn ? 'OFF' : 'ON',
             style: TextStyle(color: Colors.white, fontSize: 20),

@@ -4,15 +4,20 @@ class Server {
   HttpServer _server;
   bool isOn = false;
 
-  void start(String ssid, String pw, Function callback) async {
-    _server = await HttpServer.bind('192.168.43.1', 8080);
-    print('Server running at: ${_server.address.address}:${_server.port}');
-    isOn = true;
-    callback();
+  void start(String ssid, String pw, Function callback, Function onError) async {
+    try {
+      _server = await HttpServer.bind('192.168.43.1', 8080);
+      print('abc');
+      print('Server running at: ${_server.address.address}:${_server.port}');
+      isOn = true;
+      callback();
 
-    await for (HttpRequest req in _server) {
-      print('requested ${req.uri.toString()} from ${req.connectionInfo.remoteAddress.address}');
-      _serveRequest(ssid, pw, req);
+      await for (HttpRequest req in _server) {
+        print('requested ${req.uri.toString()} from ${req.connectionInfo.remoteAddress.address}');
+        _serveRequest(ssid, pw, req);
+      }
+    } catch (e) {
+      onError();
     }
   }
 
